@@ -1,0 +1,1612 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+
+/* ═══════════════════════════════════════════════════════════════
+   🖼️  YOUR BACKGROUND IMAGES — EXPLORE PAGE
+   Paste a picture link into any blank below, exactly like this:
+
+       --img-hero-bg: url("https://example.com/my-image.jpg");
+
+   Leave a blank as `none` to keep the default look.
+   Tip: wide, dark-toned images (1920px+) keep the text readable.
+   ═══════════════════════════════════════════════════════════════ */
+:root {
+  /* BLANK 1 ▸ full-page background (stays fixed while you scroll)
+     Earth at night (Unsplash, free license) — swap the link for any other image */
+  --img-page-bg: url("https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=1920&q=80");
+
+  /* BLANK 2 ▸ banner behind the "World Explorer" title */
+  --img-hero-bg: none;
+
+  /* BLANK 3 ▸ background of the country detail panel (slide-in) */
+  --img-panel-bg: none;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   🎬  YOUR BACKGROUND VIDEOS — LOGIN & SIGNUP PAGES
+   Your Pinterest videos, downloaded as browser-safe H.264 and stored
+   inside the app:
+       public/videos/login-bg.mp4          (44-second loop, 702×396, 16:9)  ▸ LOGIN
+       public/videos/login-poster.jpg  (frame shown before play)
+       public/videos/shared-bg.mp4     (24-second loop, 640×360)   ▸ SIGNUP
+       public/videos/shared-poster.jpg
+   To swap one: replace that mp4, or edit the <source> path in
+   src/pages/Login.jsx / src/pages/Signup.jsx.
+   Both display fixed + cover + centred, so they fit phone, square
+   4:4 and wide desktop screens without distortion.
+   ═══════════════════════════════════════════════════════════════ */
+
+/* ============================================================
+   Design tokens
+   ============================================================ */
+:root {
+  --bg: #0b0f17;
+  --bg-2: #0f1420;
+  --bg-elev: #141b28;
+  --bg-elev-2: #1b2433;
+  --border: #243044;
+  --border-soft: rgba(255, 255, 255, 0.06);
+  --text: #e8eef8;
+  --text-dim: #93a1b5;
+  --text-faint: #66748a;
+  --accent: #5b8cff;
+  --accent-2: #8b5cf6;
+  --accent-soft: rgba(91, 140, 255, 0.14);
+  --accent-glow: rgba(91, 140, 255, 0.35);
+  --danger: #f87171;
+  --radius: 16px;
+  --radius-sm: 10px;
+  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.3);
+  --shadow: 0 14px 34px rgba(0, 0, 0, 0.45);
+  --shadow-lg: 0 28px 70px rgba(0, 0, 0, 0.6);
+  --font: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+  margin: 0;
+}
+
+body {
+  background:
+    radial-gradient(1100px 520px at 85% -12%, rgba(139, 92, 246, 0.16) 0%, transparent 60%),
+    radial-gradient(900px 480px at 8% -6%, rgba(91, 140, 255, 0.14) 0%, transparent 55%),
+    var(--bg);
+  background-attachment: fixed;
+  color: var(--text);
+  font-family: var(--font);
+  font-size: 15px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Blank 1 fills this fixed layer — while it is `none`, nothing paints here
+   and the gradient background above shows through as before. */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background-image: var(--img-page-bg);
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+::selection {
+  background: rgba(91, 140, 255, 0.35);
+  color: #fff;
+}
+
+::-webkit-scrollbar {
+  width: 11px;
+  height: 11px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: #26324a;
+  border-radius: 99px;
+  border: 3px solid var(--bg);
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #33425f;
+}
+
+.app,
+.main {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 26px 22px 48px;
+}
+
+/* ============================================================
+   Buttons
+   ============================================================ */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 10px 18px;
+  border-radius: var(--radius-sm);
+  border: 1px solid transparent;
+  font-family: inherit;
+  font-size: 0.92rem;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  cursor: pointer;
+  text-decoration: none;
+  color: var(--text);
+  white-space: nowrap;
+  transition: transform 0.15s ease, background 0.15s ease, border-color 0.15s ease,
+    box-shadow 0.2s ease, opacity 0.15s ease;
+}
+
+.btn:active:not(:disabled) {
+  transform: translateY(1px);
+}
+
+.btn:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, var(--accent) 0%, var(--accent-2) 100%);
+  color: #fff;
+  box-shadow: 0 8px 22px rgba(91, 140, 255, 0.28);
+}
+
+.btn-primary:hover:not(:disabled) {
+  box-shadow: 0 12px 28px rgba(91, 140, 255, 0.4);
+  filter: brightness(1.06);
+}
+
+.btn-ghost {
+  background: rgba(255, 255, 255, 0.03);
+  border-color: var(--border);
+  color: var(--text-dim);
+}
+
+.btn-ghost:hover {
+  color: var(--text);
+  border-color: rgba(91, 140, 255, 0.6);
+  background: var(--accent-soft);
+}
+
+.btn-block {
+  width: 100%;
+  padding: 12px 18px;
+}
+
+/* ============================================================
+   Navigation
+   ============================================================ */
+/* Nav sits at the top level (outside .app), so it bleeds edge-to-edge and
+   re-centres its own content on the same column the pages use. */
+.nav {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  padding: 12px 22px;
+  margin-bottom: 6px;
+  border-bottom: 1px solid var(--border-soft);
+  background: rgba(11, 15, 23, 0.72);
+  backdrop-filter: blur(14px) saturate(160%);
+  -webkit-backdrop-filter: blur(14px) saturate(160%);
+}
+
+.nav-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+/* The logo artwork has a white background, so it sits on a white rounded
+   plate in the dark UI. */
+.brand-logo {
+  width: 32px;
+  height: 32px;
+  object-fit: contain;
+  border-radius: 9px;
+  background: #fff;
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.14);
+  flex: none;
+}
+
+.nav-brand {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  font-weight: 700;
+  font-size: 1.02rem;
+  letter-spacing: -0.01em;
+  text-decoration: none;
+  color: var(--text);
+}
+
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.nav-link {
+  padding: 8px 13px;
+  border-radius: 9px;
+  color: var(--text-dim);
+  text-decoration: none;
+  font-size: 0.9rem;
+  font-weight: 500;
+  transition: color 0.15s ease, background 0.15s ease;
+}
+
+.nav-link:hover {
+  color: var(--text);
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.nav-link-active {
+  color: var(--text);
+  background: var(--accent-soft);
+}
+
+.nav-user {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-left: 8px;
+  padding-left: 12px;
+  border-left: 1px solid var(--border);
+}
+
+.nav-username {
+  font-size: 0.85rem;
+  color: var(--text-dim);
+  max-width: 160px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* ============================================================
+   Explore — header
+   ============================================================ */
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  margin-bottom: 26px;
+  padding: 22px 24px;
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  border-radius: 20px;
+  /* glass card: colour + dark veil on top, Blank 2 image underneath */
+  background-color: rgba(20, 27, 40, 0.55);
+  background-image: linear-gradient(rgba(11, 15, 23, 0.55), rgba(11, 15, 23, 0.68)),
+    var(--img-hero-bg);
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  box-shadow: 0 10px 34px rgba(0, 0, 0, 0.28);
+  backdrop-filter: blur(12px) saturate(140%);
+  -webkit-backdrop-filter: blur(12px) saturate(140%);
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.brand-globe {
+  display: grid;
+  place-items: center;
+  width: 58px;
+  height: 58px;
+  border-radius: 18px;
+  background: #fff;
+  border: 1px solid rgba(91, 140, 255, 0.35);
+  box-shadow: 0 10px 30px rgba(91, 140, 255, 0.22);
+  overflow: hidden;
+}
+
+.brand-globe img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.header h1 {
+  margin: 0;
+  font-size: 1.85rem;
+  font-weight: 800;
+  letter-spacing: -0.025em;
+  line-height: 1.15;
+  background: linear-gradient(100deg, #fff 10%, var(--accent) 55%, var(--accent-2) 95%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.tagline {
+  margin: 3px 0 0;
+  font-size: 0.88rem;
+  color: var(--text-dim);
+}
+
+.header-count {
+  text-align: right;
+  line-height: 1.15;
+  padding: 12px 18px;
+  border-radius: 14px;
+  background: var(--bg-elev);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-sm);
+}
+
+.header-count strong {
+  display: block;
+  font-size: 1.7rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+
+.header-count span {
+  font-size: 0.7rem;
+  color: var(--text-dim);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+/* ============================================================
+   Explore — controls
+   ============================================================ */
+.controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 22px;
+}
+
+.search {
+  position: relative;
+  flex: 1 1 300px;
+  display: flex;
+  align-items: center;
+  background: var(--bg-elev);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 0 14px;
+  transition: border-color 0.15s ease, box-shadow 0.2s ease, background 0.15s ease;
+}
+
+.search:focus-within {
+  border-color: var(--accent);
+  background: var(--bg-elev-2);
+  box-shadow: 0 0 0 4px rgba(91, 140, 255, 0.16);
+}
+
+.search-icon {
+  font-size: 0.9rem;
+  opacity: 0.55;
+}
+
+.search input {
+  flex: 1;
+  background: transparent;
+  border: none;
+  outline: none;
+  color: var(--text);
+  padding: 13px 12px;
+  font-family: inherit;
+  font-size: 0.95rem;
+}
+
+.search input::placeholder {
+  color: var(--text-faint);
+}
+
+.search input::-webkit-search-cancel-button {
+  display: none;
+}
+
+.clear {
+  background: rgba(255, 255, 255, 0.06);
+  border: none;
+  border-radius: 7px;
+  width: 24px;
+  height: 24px;
+  display: grid;
+  place-items: center;
+  color: var(--text-dim);
+  cursor: pointer;
+  font-size: 0.72rem;
+  transition: color 0.15s ease, background 0.15s ease;
+}
+
+.clear:hover {
+  color: var(--text);
+  background: rgba(255, 255, 255, 0.12);
+}
+
+.filters {
+  display: flex;
+  gap: 10px;
+}
+
+.filters select {
+  appearance: none;
+  background: var(--bg-elev)
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%2393a1b5' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E")
+    no-repeat right 13px center;
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 12px 36px 12px 14px;
+  font-family: inherit;
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: border-color 0.15s ease, box-shadow 0.2s ease, background-color 0.15s ease;
+}
+
+.filters select:hover {
+  border-color: rgba(91, 140, 255, 0.5);
+}
+
+.filters select:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 4px rgba(91, 140, 255, 0.16);
+}
+
+.filters option {
+  background: var(--bg-elev);
+  color: var(--text);
+}
+
+.result-count {
+  color: var(--text-faint);
+  font-size: 0.84rem;
+  font-weight: 500;
+  margin-left: auto;
+  white-space: nowrap;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.55);
+}
+
+/* ============================================================
+   Explore — grid + cards
+   ============================================================ */
+.status {
+  text-align: center;
+  color: var(--text-dim);
+  padding: 60px 0;
+  font-size: 0.95rem;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+}
+
+.status.error {
+  color: #fca5a5;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+  gap: 18px;
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+  background: var(--bg-elev);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+  cursor: pointer;
+  color: var(--text);
+  padding: 0;
+  font-family: inherit;
+  transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.25s ease;
+}
+
+.card:hover,
+.card:focus-visible {
+  transform: translateY(-5px);
+  border-color: rgba(91, 140, 255, 0.55);
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(91, 140, 255, 0.25);
+  outline: none;
+}
+
+.card-flag {
+  width: 100%;
+  height: 118px;
+  object-fit: cover;
+  background: var(--bg-elev-2);
+  border-bottom: 1px solid var(--border-soft);
+  transition: transform 0.35s ease;
+}
+
+.card:hover .card-flag {
+  transform: scale(1.05);
+}
+
+.card-body {
+  padding: 13px 15px 15px;
+  overflow: hidden;
+}
+
+.card-name {
+  margin: 0 0 3px;
+  font-size: 1.05rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.card-capital {
+  margin: 0 0 9px;
+  color: var(--text-dim);
+  font-size: 0.82rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.card-meta {
+  margin: 0;
+  font-size: 0.8rem;
+  color: var(--text-faint);
+}
+
+/* ============================================================
+   Country detail panel
+   ============================================================ */
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(4, 7, 12, 0.62);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  display: flex;
+  justify-content: flex-end;
+  z-index: 50;
+  animation: fade 0.2s ease;
+}
+
+.panel {
+  position: relative;
+  width: min(460px, 100%);
+  height: 100%;
+  overflow-y: auto;
+  /* colour + dark veil on top, Blank 3 image underneath */
+  background-color: var(--bg-elev);
+  background-image: linear-gradient(180deg, rgba(20, 27, 40, 0.8) 0%, rgba(11, 15, 23, 0.88) 100%),
+    var(--img-panel-bg);
+  background-size: cover;
+  background-position: center top;
+  background-repeat: no-repeat;
+  border-left: 1px solid var(--border);
+  padding: 26px;
+  box-shadow: var(--shadow-lg);
+  animation: slide 0.28s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+@keyframes slide {
+  from {
+    transform: translateX(48px);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes fade {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.panel-close {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: 1px solid var(--border);
+  background: var(--bg-elev-2);
+  color: var(--text-dim);
+  cursor: pointer;
+  font-size: 0.85rem;
+  transition: color 0.15s ease, border-color 0.15s ease, transform 0.15s ease;
+}
+
+.panel-close:hover {
+  color: var(--text);
+  border-color: rgba(91, 140, 255, 0.6);
+  transform: rotate(90deg);
+}
+
+.panel-flag {
+  width: 100%;
+  height: 160px;
+  object-fit: cover;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  background: var(--bg-elev-2);
+  box-shadow: var(--shadow-sm);
+}
+
+.panel-title {
+  margin: 18px 0 2px;
+  font-size: 1.85rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+
+.panel-official {
+  margin: 0 0 20px;
+  color: var(--text-dim);
+  font-size: 0.9rem;
+}
+
+.facts {
+  margin: 0 0 20px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.fact {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid var(--border-soft);
+  border-radius: 12px;
+  padding: 11px 13px;
+}
+
+.fact dt {
+  font-size: 0.68rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-faint);
+  margin-bottom: 4px;
+  font-weight: 600;
+}
+
+.fact dd {
+  margin: 0;
+  font-size: 0.92rem;
+  font-weight: 500;
+  line-height: 1.35;
+  word-break: break-word;
+}
+
+.fact:nth-child(6),
+.fact:nth-child(7) {
+  grid-column: 1 / -1;
+}
+
+/* ============================================================
+   Weather
+   ============================================================ */
+.weather {
+  background: linear-gradient(160deg, rgba(91, 140, 255, 0.16), rgba(139, 92, 246, 0.1));
+  border: 1px solid rgba(91, 140, 255, 0.28);
+  border-radius: var(--radius);
+  padding: 18px;
+  margin-bottom: 20px;
+}
+
+.weather h3 {
+  margin: 0 0 12px;
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--text-dim);
+  font-weight: 700;
+}
+
+.weather-loading,
+.weather-error {
+  color: var(--text-dim);
+  font-size: 0.9rem;
+  margin: 0;
+}
+
+.weather-error {
+  color: #fca5a5;
+}
+
+.weather-now {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 14px;
+}
+
+.weather-emoji {
+  font-size: 3rem;
+  filter: drop-shadow(0 6px 14px rgba(0, 0, 0, 0.4));
+}
+
+.weather-temp {
+  margin: 0;
+  font-size: 2.6rem;
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: -0.03em;
+}
+
+.weather-desc {
+  margin: 5px 0 0;
+  color: var(--text-dim);
+  font-size: 0.9rem;
+  text-transform: capitalize;
+}
+
+.weather-stats {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 14px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  font-size: 0.8rem;
+}
+
+.weather-stats li {
+  background: rgba(0, 0, 0, 0.25);
+  border: 1px solid var(--border-soft);
+  border-radius: 999px;
+  padding: 4px 11px;
+  color: var(--text-dim);
+}
+
+.forecast {
+  display: flex;
+  gap: 9px;
+}
+
+.forecast-day {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+  background: rgba(0, 0, 0, 0.28);
+  border: 1px solid var(--border-soft);
+  border-radius: 12px;
+  padding: 10px 6px;
+  font-size: 0.8rem;
+}
+
+.forecast-name {
+  color: var(--text-faint);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  font-size: 0.66rem;
+  font-weight: 600;
+}
+
+.forecast-emoji {
+  font-size: 1.4rem;
+}
+
+.forecast-temp {
+  font-weight: 600;
+}
+
+/* ============================================================
+   Currency vs INR — separate comparison box in the panel
+   ============================================================ */
+.currency {
+  background: linear-gradient(160deg, rgba(16, 185, 129, 0.16), rgba(59, 130, 246, 0.1));
+  border: 1px solid rgba(16, 185, 129, 0.3);
+  border-radius: var(--radius);
+  padding: 18px;
+  margin-bottom: 20px;
+}
+
+.currency h3 {
+  margin: 0 0 12px;
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--text-dim);
+  font-weight: 700;
+}
+
+.currency-rows {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.currency-row {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid var(--border-soft);
+  border-radius: 12px;
+  padding: 11px 13px;
+}
+
+.currency-name strong {
+  display: block;
+  font-size: 0.92rem;
+  font-weight: 600;
+  line-height: 1.35;
+}
+
+.currency-code {
+  display: block;
+  margin-top: 2px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: #6ee7b7;
+  text-transform: uppercase;
+}
+
+.currency-rate {
+  margin: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 16px;
+  font-size: 0.85rem;
+  color: var(--text-dim);
+}
+
+.currency-pair strong {
+  color: var(--text);
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.currency-updated {
+  margin: 11px 0 0;
+  font-size: 0.7rem;
+  color: var(--text-faint);
+}
+
+/* ============================================================
+   Footer
+   ============================================================ */
+.panel-link {
+  display: inline-block;
+  color: var(--accent);
+  text-decoration: none;
+  font-size: 0.9rem;
+  font-weight: 500;
+  transition: opacity 0.15s ease;
+}
+
+.panel-link:hover {
+  text-decoration: underline;
+  opacity: 0.85;
+}
+
+.footer {
+  margin-top: 44px;
+  padding-top: 18px;
+  border-top: 1px solid var(--border-soft);
+  text-align: center;
+  color: var(--text-faint);
+  font-size: 0.8rem;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+}
+
+.footer a {
+  color: var(--accent);
+  text-decoration: none;
+}
+
+.footer a:hover {
+  text-decoration: underline;
+}
+
+/* ============================================================
+   Auth pages — login & signup
+   ============================================================ */
+.auth-wrap {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 48px 22px 70px;
+  position: relative;
+}
+
+.auth-wrap::before {
+  content: '';
+  position: absolute;
+  top: -120px;
+  left: 50%;
+  transform: translateX(-50%);
+  /* min() keeps the glow from forcing a horizontal scrollbar on small screens */
+  width: min(620px, 100%);
+  height: 340px;
+  background: radial-gradient(closest-side, rgba(91, 140, 255, 0.22), transparent 75%);
+  pointer-events: none;
+}
+
+/* Login video background: fixed + cover + centred, so any video fits any
+   screen shape (phone, square 4:4, desktop) without distortion. */
+.auth-video {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  z-index: -1;
+  pointer-events: none;
+}
+
+/* Light veil painted over the video (same z-index, later in tree order) so
+   the nav and card stay readable. ::before is taken by the glow, so the
+   veil lives on ::after. */
+.auth-wrap-login::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background-image: linear-gradient(rgba(11, 15, 23, 0.35), rgba(11, 15, 23, 0.55));
+}
+
+.auth-card {
+  position: relative;
+  width: 100%;
+  max-width: 400px;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.03) 0%, transparent 40%), var(--bg-elev);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 32px 30px 26px;
+  box-shadow: var(--shadow-lg);
+}
+
+.auth-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 24px;
+  right: 24px;
+  height: 3px;
+  border-radius: 0 0 4px 4px;
+  background: linear-gradient(90deg, var(--accent), var(--accent-2));
+}
+
+.auth-brand {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 22px;
+}
+
+.auth-logo {
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  background: #fff;
+  border: 1px solid rgba(91, 140, 255, 0.35);
+  overflow: hidden;
+}
+
+.auth-logo img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.auth-brand-name {
+  font-size: 1.05rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  background: linear-gradient(100deg, #fff 20%, var(--accent) 90%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.auth-card h1 {
+  margin: 0 0 5px;
+  font-size: 1.5rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  text-align: center;
+}
+
+.auth-sub {
+  margin: 0 0 22px;
+  color: var(--text-dim);
+  font-size: 0.9rem;
+  text-align: center;
+}
+
+.auth-error {
+  background: rgba(248, 113, 113, 0.1);
+  border: 1px solid rgba(248, 113, 113, 0.35);
+  color: #fca5a5;
+  padding: 10px 13px;
+  border-radius: 10px;
+  font-size: 0.85rem;
+  margin: 0 0 16px;
+}
+
+.field {
+  display: block;
+  margin-bottom: 16px;
+}
+
+.field span {
+  display: block;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--text-dim);
+  margin-bottom: 7px;
+  letter-spacing: 0.02em;
+}
+
+.field input {
+  width: 100%;
+  background: var(--bg-2);
+  border: 1px solid var(--border);
+  border-radius: 11px;
+  color: var(--text);
+  padding: 12px 14px;
+  font-family: inherit;
+  font-size: 0.93rem;
+  outline: none;
+  transition: border-color 0.15s ease, box-shadow 0.2s ease, background 0.15s ease;
+}
+
+.field input::placeholder {
+  color: var(--text-faint);
+}
+
+.field input:focus {
+  border-color: var(--accent);
+  background: var(--bg-elev-2);
+  box-shadow: 0 0 0 4px rgba(91, 140, 255, 0.16);
+}
+
+.auth-switch {
+  margin: 18px 0 0;
+  text-align: center;
+  font-size: 0.87rem;
+  color: var(--text-dim);
+}
+
+.auth-switch a {
+  color: var(--accent);
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.auth-switch a:hover {
+  text-decoration: underline;
+}
+
+.auth-hint {
+  margin: 18px 0 0;
+  text-align: center;
+  font-size: 0.74rem;
+  color: var(--text-faint);
+  line-height: 1.6;
+}
+
+.auth-hint code {
+  background: var(--bg-2);
+  border: 1px solid var(--border);
+  padding: 2px 6px;
+  border-radius: 6px;
+  font-size: 0.7rem;
+  font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', monospace;
+}
+
+/* ============================================================
+   Admin
+   ============================================================ */
+.admin {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 10px 22px 60px;
+}
+
+.admin-head {
+  margin-bottom: 22px;
+}
+
+.admin-head h1 {
+  margin: 0 0 4px;
+  font-size: 1.55rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+
+.admin-sub {
+  margin: 0;
+  color: var(--text-dim);
+  font-size: 0.9rem;
+}
+
+.table-wrap {
+  overflow-x: auto;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--bg-elev);
+  box-shadow: var(--shadow-sm);
+}
+
+.admin-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+}
+
+.admin-table th,
+.admin-table td {
+  padding: 13px 18px;
+  text-align: left;
+  border-bottom: 1px solid var(--border-soft);
+  white-space: nowrap;
+}
+
+.admin-table th {
+  background: rgba(255, 255, 255, 0.03);
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-faint);
+  font-weight: 700;
+}
+
+.admin-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.admin-table tbody tr {
+  transition: background 0.12s ease;
+}
+
+.admin-table tbody tr:hover {
+  background: rgba(91, 140, 255, 0.06);
+}
+
+.cell-name {
+  font-weight: 600;
+}
+
+.badge {
+  display: inline-block;
+  padding: 3px 11px;
+  border-radius: 999px;
+  font-size: 0.72rem;
+  font-weight: 600;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--border);
+  color: var(--text-dim);
+}
+
+.badge-admin {
+  background: rgba(139, 92, 246, 0.16);
+  border-color: rgba(139, 92, 246, 0.5);
+  color: #c4b5fd;
+}
+
+/* ============================================================
+   Dashboards (user + admin)
+   ============================================================ */
+/* Both dashboards reuse .app/.header/.main from Explore, so they sit on the
+   same fixed background image with the same glassy hero banner. These rules
+   only add the dashboard-specific pieces: stat cards, activity lists and the
+   user-vs-admin comparison box. */
+
+.dash-role {
+  font-size: 1.25rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.dash-main {
+  padding-top: 4px;
+}
+
+.stat-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+  gap: 16px;
+  margin-bottom: 22px;
+}
+
+.stat-grid-activity {
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+}
+
+.stat-card,
+.dash-card {
+  background: rgba(20, 27, 40, 0.72);
+  backdrop-filter: blur(12px) saturate(140%);
+  -webkit-backdrop-filter: blur(12px) saturate(140%);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-sm);
+}
+
+.stat-card {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  padding: 18px 20px 16px;
+  position: relative;
+  overflow: hidden;
+  transition: transform 0.18s ease, border-color 0.18s ease, box-shadow 0.2s ease;
+}
+
+.stat-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--accent), var(--accent-2));
+  opacity: 0.75;
+}
+
+.stat-card:hover {
+  transform: translateY(-3px);
+  border-color: rgba(91, 140, 255, 0.55);
+  box-shadow: 0 16px 34px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(91, 140, 255, 0.25);
+}
+
+.stat-card-admin::before {
+  background: linear-gradient(90deg, var(--accent-2), var(--accent));
+}
+
+.stat-label {
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--text-faint);
+}
+
+.stat-value {
+  font-size: 2rem;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  line-height: 1.15;
+  font-variant-numeric: tabular-nums;
+}
+
+.stat-value-sm {
+  font-size: 1.05rem;
+  letter-spacing: 0;
+  word-break: break-word;
+}
+
+.stat-note {
+  font-size: 0.75rem;
+  color: var(--text-dim);
+}
+
+.dash-card {
+  padding: 20px 22px 22px;
+  margin-bottom: 22px;
+}
+
+.dash-card h2 {
+  margin: 0 0 4px;
+  font-size: 1.05rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.dash-count {
+  display: inline-block;
+  padding: 2px 10px;
+  border-radius: 999px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  background: var(--accent-soft);
+  border: 1px solid rgba(91, 140, 255, 0.4);
+  color: #bcd0ff;
+}
+
+.profile-grid {
+  margin: 14px 0 14px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 12px;
+}
+
+.profile-grid > div {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid var(--border-soft);
+  border-radius: 12px;
+  padding: 11px 13px;
+}
+
+.profile-grid dt {
+  font-size: 0.68rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-faint);
+  margin-bottom: 4px;
+  font-weight: 600;
+}
+
+.profile-grid dd {
+  margin: 0;
+  font-size: 0.92rem;
+  font-weight: 500;
+  word-break: break-word;
+}
+
+.dash-note {
+  margin: 0 0 16px;
+  font-size: 0.8rem;
+  color: var(--text-dim);
+  line-height: 1.55;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+}
+
+.dash-note code {
+  background: var(--bg-2);
+  border: 1px solid var(--border);
+  padding: 1px 6px;
+  border-radius: 6px;
+  font-size: 0.74rem;
+  font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', monospace;
+}
+
+.activity-list {
+  list-style: none;
+  margin: 12px 0 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.activity-list li {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 10px 12px;
+  border: 1px solid var(--border-soft);
+  border-radius: 10px;
+  background: rgba(0, 0, 0, 0.25);
+}
+
+.activity-list li + li {
+  margin-top: 8px;
+}
+
+.activity-name {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+.activity-meta {
+  font-size: 0.76rem;
+  color: var(--text-dim);
+  word-break: break-word;
+}
+
+.activity-empty {
+  color: var(--text-faint);
+  font-size: 0.85rem;
+}
+
+/* --- user vs admin comparison ---------------------------------------------- */
+.compare {
+  background: linear-gradient(160deg, rgba(91, 140, 255, 0.12), rgba(139, 92, 246, 0.08)),
+    rgba(20, 27, 40, 0.72);
+  backdrop-filter: blur(12px) saturate(140%);
+  -webkit-backdrop-filter: blur(12px) saturate(140%);
+  border: 1px solid rgba(91, 140, 255, 0.28);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-sm);
+  padding: 20px 22px 22px;
+  margin-bottom: 22px;
+}
+
+.compare h2 {
+  margin: 0 0 4px;
+  font-size: 1.05rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+
+.compare-sub {
+  margin: 0 0 16px;
+  font-size: 0.82rem;
+  color: var(--text-dim);
+}
+
+.compare-sub strong {
+  color: var(--text);
+}
+
+.compare-cols {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+
+.compare-col {
+  background: rgba(0, 0, 0, 0.28);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 14px 16px 16px;
+  transition: border-color 0.18s ease, box-shadow 0.2s ease;
+}
+
+.compare-col header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 12px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--border-soft);
+}
+
+.compare-who {
+  font-weight: 700;
+  font-size: 0.95rem;
+}
+
+/* The level you're actually on gets the accent treatment. */
+.compare-col-me {
+  border-color: rgba(91, 140, 255, 0.6);
+  box-shadow: 0 0 0 1px rgba(91, 140, 255, 0.35), 0 12px 28px rgba(0, 0, 0, 0.35);
+  background: rgba(91, 140, 255, 0.08);
+}
+
+.compare-col ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+}
+
+.compare-col li {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.compare-label {
+  font-size: 0.68rem;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: var(--text-faint);
+  font-weight: 600;
+}
+
+.compare-value {
+  font-size: 0.85rem;
+  color: var(--text);
+  line-height: 1.45;
+  word-break: break-word;
+}
+
+.dash-foot {
+  margin: 4px 0 0;
+  text-align: center;
+  font-size: 0.82rem;
+  color: var(--text-dim);
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+}
+
+.dash-foot a {
+  color: var(--accent);
+  text-decoration: none;
+}
+
+.dash-foot a:hover {
+  text-decoration: underline;
+}
+
+/* The nav shows the signed-in user's name as a link into their dashboard. */
+a.nav-username {
+  text-decoration: none;
+  transition: color 0.15s ease;
+}
+
+a.nav-username:hover {
+  color: var(--text);
+  text-decoration: underline;
+}
+
+/* ============================================================
+   Responsive
+   ============================================================ */
+@media (max-width: 640px) {
+  .header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 14px;
+  }
+
+  .header-count {
+    text-align: left;
+  }
+
+  .result-count {
+    margin-left: 0;
+  }
+
+  .facts {
+    grid-template-columns: 1fr;
+  }
+
+  .fact:nth-child(6),
+  .fact:nth-child(7) {
+    grid-column: auto;
+  }
+
+  .panel {
+    width: 100%;
+  }
+
+  .auth-card {
+    padding: 26px 22px 22px;
+  }
+
+  .compare-cols {
+    grid-template-columns: 1fr;
+  }
+
+  .stat-grid {
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  }
+
+  .dash-card,
+  .compare {
+    padding: 16px 16px 18px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}

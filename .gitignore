@@ -1,0 +1,27 @@
+# Dependencies
+node_modules/
+
+# Build output
+dist/
+
+# Runtime database — contains bcrypt password hashes and live session
+# tokens. Never commit this; it is created on first run by server/db.js.
+server/data/
+
+# Environment files (API keys, secrets)
+.env
+.env.*
+!.env.example
+
+# Logs
+*.log
+npm-debug.log*
+
+# Editor / OS noise
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+
+# Local verification screenshots
+screenshots/
