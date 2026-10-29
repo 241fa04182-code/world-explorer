@@ -9,30 +9,56 @@ import bcrypt from 'bcryptjs'
 import crypto from 'node:crypto'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
-const DATA_DIR = path.join(__dirname, 'data')
+
+// Locally we persist next to the code in server/data/. On Vercel the bundle's
+// filesystem is read-only and server/data/ is gitignored (so it isn't even in
+// the bundle) — /tmp is the only writable location. NOTE: /tmp is ephemeral,
+// so on Vercel accounts and sessions reset on cold start. Durable auth needs
+// a hosted database (see README "Deploying").
+const IS_VERCEL = process.env.VERCEL === '1' || process.env.VERCEL === 'true'
+const DATA_DIR = IS_VERCEL
+  ? path.join('/tmp', 'world-explorer')
+  : path.join(__dirname, 'data')
 const DB_FILE = path.join(DATA_DIR, 'db.json')
 
 // --- persistence ------------------------------------------------------------
 
 function load() {
-  if (!fs.existsSync(DATA_DIR)) fs.mkdirSync(DATA_DIR, { recursive: true })
-  if (!fs.existsSync(DB_FILE)) {
-    const initial = { users: [], sessions: {} }
-    fs.writeFileSync(DB_FILE, JSON.stringify(initial, null, 2))
-    return initial
+  try {
+    if (!fs.existsSync(DATA_DIR)) fs.mkdirSync(DATA_DIR, { recursive: true })
+    if (!fs.existsSync(DB_FILE)) {
+      const initial = { users: [], sessions: {} }
+      fs.writeFileSync(DB_FILE, JSON.stringify(initial, null, 2))
+      return initial
+    }
+    return JSON.parse(fs.readFileSync(DB_FILE, 'utf8'))
+  } catch (err) {
+    // Never let storage take the whole API down — degrade to an empty store
+    // so routes still answer instead of throwing at import time.
+    console.error(`db load failed (${err.code || err.message}); using empty store`)
+    return { users: [], sessions: {} }
   }
-  return JSON.parse(fs.readFileSync(DB_FILE, 'utf8'))
 }
 
 let db = load()
 
-// Debounced write so we don't hammer the disk on rapid changes.
+// Debounced write so we don't hammer the disk on rapid changes. On Vercel the
+// function can freeze between invocations, so a delayed write would be lost —
+// there we flush synchronously instead.
 let writeTimer = null
-function save() {
-  clearTimeout(writeTimer)
-  writeTimer = setTimeout(() => {
+function flush() {
+  try {
     fs.writeFileSync(DB_FILE, JSON.stringify(db, null, 2))
-  }, 50)
+  } catch (err) {
+    // Storage may be read-only. Keep serving from memory rather than crashing
+    // the request that triggered the write.
+    console.error(`db save failed (${err.code || err.message})`)
+  }
+}
+function save() {
+  if (IS_VERCEL) return flush()
+  clearTimeout(writeTimer)
+  writeTimer = setTimeout(flush, 50)
 }
 
 // --- seed a default admin ---------------------------------------------------

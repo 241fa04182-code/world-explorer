@@ -1,6 +1,9 @@
 // World Explorer backend: auth + admin API.
 // Runs on port 3001. In dev, Vite proxies /api here. In production it also
 // serves the built frontend from dist/ so the whole app runs on one port.
+//
+// On Vercel, api/index.js imports the exported `app` instead and the platform
+// invokes it per request — so we must NOT call listen() there.
 
 import express from 'express'
 import cookieParser from 'cookie-parser'
@@ -292,10 +295,14 @@ app.get('/api/currency/rates', async (req, res) => {
   }
 })
 
+// Vercel sets VERCEL=1; there we must not bind a port or serve dist/ (the
+// platform serves the static build itself and routes /api/* to the function).
+const IS_VERCEL = process.env.VERCEL === '1' || process.env.VERCEL === 'true'
+
 // --- production static serving ----------------------------------------------
 
 const distDir = path.join(__dirname, '..', 'dist')
-if (fs.existsSync(distDir)) {
+if (!IS_VERCEL && fs.existsSync(distDir)) {
   app.use(express.static(distDir))
   // SPA fallback for any non-API GET route (client-side routing).
   // Uses app.use() (not a '*' route) so it works on Express 4 and 5.
@@ -308,6 +315,11 @@ if (fs.existsSync(distDir)) {
   })
 }
 
-app.listen(PORT, () => {
-  console.log(`World Explorer API running on http://localhost:${PORT}`)
-})
+if (!IS_VERCEL) {
+  app.listen(PORT, () => {
+    console.log(`World Explorer API running on http://localhost:${PORT}`)
+  })
+}
+
+// Vercel's Node runtime accepts an Express app directly as the handler.
+export default app
