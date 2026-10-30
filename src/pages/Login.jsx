@@ -32,8 +32,10 @@ export default function Login() {
     }
   }
 
+  // auth-login marks this as the log-in page so its submit button can be green
+  // (a "go" action) while sign-up keeps the standard blue/violet accent.
   return (
-    <div className="auth-wrap auth-wrap-login">
+    <div className="auth-wrap auth-wrap-login auth-login">
       {/* Background video (from your Pinterest pin): 16:9 landscape, so it
           fills a wide screen with no rotation needed. To change it, replace
           public/videos/login-bg.mp4 — or edit this <source> path. */}
