@@ -5,20 +5,25 @@
 // calling listen(). server/index.js skips its own listen() and dist/ static
 // serving when VERCEL=1, because the platform serves the static build itself.
 //
-// Path normalization: vercel.json routes /api/(.*) to /api/index/$1. Vercel
-// documents `dest` as "the URL path your Function reads from req.url", so the
-// handler may be handed /api/index/auth/login. Express has its routes mounted
-// at /api/auth/login, so collapse that prefix back. If the platform instead
-// passes the original URL through untouched, the regex doesn't match and the
-// path is left alone — both behaviours work.
+// Path normalization: vercel.json rewrites /api/(.*) to the function path
+// /api/index. Depending on how the platform resolves `dest`, req.url may be
+// the original path (/api/auth/login), the function path (/api/index or
+// /api/index/auth/login), or a path missing the /api mount entirely. Express
+// mounts its routes at /api/..., so normalise all three shapes to that.
 
 import app from '../server/index.js'
 
-const REWRITTEN_PREFIX = /^\/api\/index(?=\/|$)/
+const FUNCTION_PREFIX = /^\/api\/index(?=\/|$)/
+const ALREADY_MOUNTED = /^\/api(?=\/|$)/
 
 export default function handler(req, res) {
-  if (typeof req.url === 'string' && REWRITTEN_PREFIX.test(req.url)) {
-    req.url = req.url.replace(REWRITTEN_PREFIX, '/api')
+  if (typeof req.url === 'string') {
+    if (FUNCTION_PREFIX.test(req.url)) {
+      req.url = req.url.replace(FUNCTION_PREFIX, '/api')
+    } else if (!ALREADY_MOUNTED.test(req.url)) {
+      const path = req.url.startsWith('/') ? req.url : `/${req.url}`
+      req.url = `/api${path}`
+    }
   }
   return app(req, res)
 }
